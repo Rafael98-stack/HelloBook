@@ -67,6 +67,15 @@ public class BookService {
                 .build();
     }
 
+    public BookResponse getByTitleAndNationality(String title, String nationality) {
+        Book book = bookDAO.findByTitleAndAuthor_Nationality(title,nationality);
+
+        return BookResponse
+                .builder()
+                .id(book.getId())
+                .build();
+    }
+
     public List<BookResponse> getAllBooks(){
         List<Book> books = bookDAO.findAll();
 
@@ -79,5 +88,6 @@ public class BookService {
     public void deleteBookById(Long id_book){
         bookDAO.deleteById(id_book);
     }
+
 
 }

@@ -43,8 +43,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .collect(Collectors.toList());
             addressDAO.saveAll(addresse);
         }
-
-        if (userDAO.count() == 0) {
+        if (userDAO.count() == 0 && !addresses.isEmpty()) {
             List<User> users = IntStream.range(0, Math.min(1000, addresses.size()))
                     .mapToObj(i -> new User(addresses.get(i), "0" + i, i + "@example.com", "Cognome" + i, "Nome" + i))
                     .collect(Collectors.toList());
@@ -56,9 +55,13 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .collect(Collectors.toList());
             authorDAO.saveAll(author);
         }
-        if (bookDAO.count() == 0) {
+
+        if (bookDAO.count() == 0 && !authors.isEmpty()) {
             List<Book> books = IntStream.range(0, Math.min(1000, authors.size()))
-                    .mapToObj(i -> new Book(authors.get(i), i,  LocalDate.of(1990 + (i % 30), (i % 12) + 1, (i % 28) + 1), 10.0 + i, "Book Title " + i))
+                    .mapToObj(i -> {
+                        Author author = authors.get(i % authors.size()); // Usa modulo per evitare di superare l'indice
+                        return new Book(author, i, LocalDate.of(1990 + (i % 30), (i % 12) + 1, (i % 28) + 1), 10.0 + i, "Book Title " + i);
+                    })
                     .collect(Collectors.toList());
             bookDAO.saveAll(books);
         }

@@ -23,6 +23,11 @@ public class BookController {
         return new ResponseEntity<>(bookService.getBookById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/get/{title}/{nationality}")
+    public ResponseEntity<BookResponse> getByTitleAndNationality(@PathVariable String title,@PathVariable String nationality){
+        return new ResponseEntity<>(bookService.getByTitleAndNationality(title,nationality), HttpStatus.OK);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<BookResponse>> getAll(){
         return  new ResponseEntity<>(bookService.getAllBooks(),HttpStatus.OK);
