@@ -1,0 +1,83 @@
+package project.HelloBook.Services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import project.HelloBook.Dtos.BookDtos.BookRequestInsert;
+import project.HelloBook.Dtos.BookDtos.BookRequestUpdate;
+import project.HelloBook.Dtos.BookDtos.BookResponse;
+import project.HelloBook.Entities.Book;
+import project.HelloBook.ExceptionHandlers.Exceptions.AuthorNotFoundException;
+import project.HelloBook.ExceptionHandlers.Exceptions.BookNotFoundException;
+import project.HelloBook.Repositories.AuthorDAO;
+import project.HelloBook.Repositories.BookDAO;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class BookService {
+    private final BookDAO bookDAO;
+    private final AuthorDAO authorDAO;
+    @Autowired
+    public BookService(BookDAO bookDAO, AuthorDAO authorDAO) {
+        this.bookDAO = bookDAO;
+        this.authorDAO = authorDAO;
+    }
+
+    public BookResponse insertBook(BookRequestInsert bookRequestInsert){
+
+        Book book = new Book(
+                authorDAO.findById(bookRequestInsert.id_author())
+                        .orElseThrow(()-> new AuthorNotFoundException("Author con id " + bookRequestInsert.id_author() + " non trovato")),
+                bookRequestInsert.stock(),
+                bookRequestInsert.published_date(),
+                bookRequestInsert.price(),
+                bookRequestInsert.title()
+        );
+
+        return BookResponse
+                .builder()
+                .id(bookDAO.save(book).getId())
+                .build();
+    }
+
+    public BookResponse updateBookById(Long id_book, BookRequestUpdate bookRequestUpdate){
+        Book book = bookDAO.findById(id_book)
+                .orElseThrow(()-> new BookNotFoundException("Book con id " + id_book + " non trovato"));
+
+        book.setAuthor( authorDAO.findById(bookRequestUpdate.id_author())
+                        .orElseThrow(()-> new AuthorNotFoundException("Author con id " + bookRequestUpdate.id_author() + " non trovato"))
+                );
+        book.setStock(bookRequestUpdate.stock());
+        book.setPublished_date(bookRequestUpdate.published_date());
+        book.setPrice(bookRequestUpdate.price());
+        book.setTitle(bookRequestUpdate.title());
+
+        return BookResponse
+                .builder()
+                .id(bookDAO.save(book).getId())
+                .build();
+    }
+
+    public BookResponse getBookById(Long id_book){
+        return BookResponse
+                .builder()
+                .id(bookDAO.findById(id_book )
+                        .orElseThrow(()-> new BookNotFoundException("Book con id " + id_book + " non trovato")).getId())
+                .build();
+    }
+
+    public List<BookResponse> getAllBooks(){
+        List<Book> books = bookDAO.findAll();
+
+        return books.stream()
+                .map(book -> new BookResponse(book.getId()))
+                .collect(Collectors.toList());
+
+    }
+
+    public void deleteBookById(Long id_book){
+        bookDAO.deleteById(id_book);
+    }
+
+}
