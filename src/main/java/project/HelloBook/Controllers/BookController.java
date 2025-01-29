@@ -1,6 +1,9 @@
 package project.HelloBook.Controllers;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import project.HelloBook.Dtos.BookDtos.BookRequestInsert;
 import project.HelloBook.Dtos.BookDtos.BookRequestUpdate;
 import project.HelloBook.Dtos.BookDtos.BookResponse;
+import project.HelloBook.Dtos.BookSelected;
 import project.HelloBook.Services.BookService;
 
 import java.util.List;
@@ -17,6 +21,7 @@ import java.util.List;
 public class BookController {
     @Autowired
     BookService bookService;
+    private static final Logger logger = LoggerFactory.getLogger(BookController.class);
 
     @GetMapping("/get/{id}")
     public ResponseEntity<BookResponse> getById(@PathVariable Long id){
@@ -24,8 +29,15 @@ public class BookController {
     }
 
     @GetMapping("/get/{title}/{nationality}")
-    public ResponseEntity<BookResponse> getByTitleAndNationality(@PathVariable String title,@PathVariable String nationality){
-        return new ResponseEntity<>(bookService.getByTitleAndNationality(title,nationality), HttpStatus.OK);
+    public ResponseEntity<BookSelected> getByTitleAndNationality(@PathVariable @NotBlank String title, @PathVariable @NotBlank String nationality){
+        logger.info("Searching for book with title: {} and nationality: {}", title, nationality);
+        BookSelected bookResponse = bookService.getByTitleAndNationality(title, nationality);
+        if (bookResponse != null) {
+            return new ResponseEntity<>(bookResponse, HttpStatus.OK);
+        } else {
+            logger.error("Book not found with title: {} and nationality: {}", title, nationality);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/all")

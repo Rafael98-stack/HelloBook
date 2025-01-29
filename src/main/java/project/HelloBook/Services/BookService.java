@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import project.HelloBook.Dtos.BookDtos.BookRequestInsert;
 import project.HelloBook.Dtos.BookDtos.BookRequestUpdate;
 import project.HelloBook.Dtos.BookDtos.BookResponse;
+import project.HelloBook.Dtos.BookSelected;
 import project.HelloBook.Entities.Book;
 import project.HelloBook.ExceptionHandlers.Exceptions.AuthorNotFoundException;
 import project.HelloBook.ExceptionHandlers.Exceptions.BookNotFoundException;
@@ -12,6 +13,7 @@ import project.HelloBook.Repositories.AuthorDAO;
 import project.HelloBook.Repositories.BookDAO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,13 +69,21 @@ public class BookService {
                 .build();
     }
 
-    public BookResponse getByTitleAndNationality(String title, String nationality) {
-        Book book = bookDAO.findByTitleAndAuthor_Nationality(title,nationality);
+    public BookSelected getByTitleAndNationality(String title, String nationality) {
+        Optional<Book> book = bookDAO.findByTitleAndAuthorNationality(title,nationality);
 
-        return BookResponse
-                .builder()
-                .id(book.getId())
-                .build();
+        return  book.map(current -> BookSelected.builder()
+                        .id(current.getId())
+                        .title(current.getTitle())
+                        .price(current.getPrice())
+                        .publishedDate(current.getPublished_date())
+                        .stock(current.getStock())
+                        .firstname(current.getAuthor().getFirstname())
+                        .lastname(current.getAuthor().getLastname())
+                        .nationality(current.getAuthor().getNationality())
+                        .build())
+                .orElseThrow(() -> new BookNotFoundException("No book found with title '" + title + "' and nationality '" + nationality + "'"));
+
     }
 
     public List<BookResponse> getAllBooks(){
