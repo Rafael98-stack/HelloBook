@@ -34,6 +34,8 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        //DONE
+
         List<Address> addresses = addressDAO.findAll();
         List<Author> authors = authorDAO.findAll();
 
