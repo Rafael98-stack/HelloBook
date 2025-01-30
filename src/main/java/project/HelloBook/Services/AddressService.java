@@ -47,6 +47,16 @@ public class AddressService {
     }
 
     public AddressResponse updateAddressById(Long id_address, AddressRequestUpdate addressRequestUpdate){
+
+        /*
+        Address addressUpdated = addressMapper.fromAddressRequestUpdate(addressRequestUpdate);
+        addressUpdated.setId(address.getId());
+        return AddressResponse
+                .builder()
+                .id(addressDAO.save(addressUpdated).getId())
+                .build();
+        */
+
         Address address = addressDAO.findById(id_address)
                 .orElseThrow(()-> new AddressNotFoundException("Address con id " + id_address + " non trovato"));
 

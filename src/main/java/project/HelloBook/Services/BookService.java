@@ -54,6 +54,16 @@ public class BookService {
     }
 
     public BookResponse updateBookById(Long id_book, BookRequestUpdate bookRequestUpdate){
+
+        /*
+        Book bookUpdated = bookMapper.fromBookRequestUpdate(bookRequestUpdate);
+        bookUpdated.setId(book.getId());
+        return BookResponse
+                .builder()
+                .id(bookDAO.save(bookUpdated).getId())
+                .build();
+        */
+
         Book book = bookDAO.findById(id_book)
                 .orElseThrow(()-> new BookNotFoundException("Book con id " + id_book + " non trovato"));
 

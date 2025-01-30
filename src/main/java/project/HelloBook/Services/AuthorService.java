@@ -47,6 +47,16 @@ public class AuthorService {
     }
 
     public AuthorResponse updateAuthorById(Long id_author, AuthorRequestUpdate authorRequestUpdate){
+
+        /*
+        Author authorUpdated = authorMapper.fromAuthorRequestUpdate(authorRequestUpdate);
+        authorUpdated.setId(author.getId());
+        return AuthorResponse
+                .builder()
+                .id(authorDAO.save(authorUpdated).getId())
+                .build();
+        */
+
         Author author = authorDAO.findById(id_author)
                 .orElseThrow(()-> new AuthorNotFoundException("Author con id " + id_author + " non trovato"));
 

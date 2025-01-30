@@ -55,15 +55,24 @@ public class UserService {
     }
 
     public UserResponse updateUserById(Long id_user, UserRequestUpdate userRequestUpdate){
+        /*
+        User userUpdated = userMapper.fromUserRequestUpdate(userRequestUpdate);
+        userUpdated.setId(user.getId());
+        return UserResponse
+                .builder()
+                .id(userDAO.save(userUpdated).getId())
+                .build();
+        */
+
         User user = userDAO.findById(id_user)
                 .orElseThrow(()-> new UserNotFoundException("User con id " + id_user + " non trovato"));
-
         user.setEmail(userRequestUpdate.email());
         user.setFirstname(userRequestUpdate.firstname());
         user.setLastname(userRequestUpdate.lastname());
         user.setPassword(userRequestUpdate.password());
         user.setAddress(addressDAO.findById(userRequestUpdate.id_address())
                 .orElseThrow(()-> new AddressNotFoundException("Address con id " + userRequestUpdate.id_address() + " non trovato")));
+
 
         return UserResponse
                 .builder()
