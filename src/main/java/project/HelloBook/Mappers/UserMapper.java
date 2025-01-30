@@ -1,15 +1,15 @@
 package project.HelloBook.Mappers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import project.HelloBook.Dtos.UserDtos.UserRequestInsert;
 import project.HelloBook.Entities.User;
 import project.HelloBook.ExceptionHandlers.Exceptions.AddressNotFoundException;
 import project.HelloBook.Repositories.AddressDAO;
-import project.HelloBook.Services.UserService;
 
+@Service
 public class UserMapper {
-    @Autowired
-    private UserService userService;
+
     @Autowired
     private AddressDAO addressDAO;
 

@@ -7,6 +7,7 @@ import project.HelloBook.Dtos.AddressDtos.AddressRequestUpdate;
 import project.HelloBook.Dtos.AddressDtos.AddressResponse;
 import project.HelloBook.Entities.Address;
 import project.HelloBook.ExceptionHandlers.Exceptions.AddressNotFoundException;
+import project.HelloBook.Mappers.AddressMapper;
 import project.HelloBook.Repositories.AddressDAO;
 
 import java.util.List;
@@ -14,14 +15,24 @@ import java.util.stream.Collectors;
 
 @Service
 public class AddressService {
-
+    private final AddressMapper addressMapper;
     private final AddressDAO addressDAO;
     @Autowired
-    public AddressService(AddressDAO addressDAO) {
+    public AddressService(AddressMapper addressMapper, AddressDAO addressDAO) {
+        this.addressMapper = addressMapper;
         this.addressDAO = addressDAO;
     }
 
     public AddressResponse insertAddress(AddressRequestInsert addressRequestInsert){
+
+        // Mapping method to "unpacking" current dto
+        /*
+        Address address = addressMapper.fromAddressRequestInsert(addressRequestInsert);
+        return AddressResponse
+                .builder()
+                .id(addressDAO.save(address).getId())
+                .build();
+        */
 
         Address address = new Address(
                 addressRequestInsert.street(),

@@ -9,6 +9,7 @@ import project.HelloBook.Dtos.BookSelected;
 import project.HelloBook.Entities.Book;
 import project.HelloBook.ExceptionHandlers.Exceptions.AuthorNotFoundException;
 import project.HelloBook.ExceptionHandlers.Exceptions.BookNotFoundException;
+import project.HelloBook.Mappers.BookMapper;
 import project.HelloBook.Repositories.AuthorDAO;
 import project.HelloBook.Repositories.BookDAO;
 
@@ -20,14 +21,23 @@ import java.util.stream.Collectors;
 public class BookService {
     private final BookDAO bookDAO;
     private final AuthorDAO authorDAO;
+    private final BookMapper bookMapper;
     @Autowired
-    public BookService(BookDAO bookDAO, AuthorDAO authorDAO) {
+    public BookService(BookDAO bookDAO, AuthorDAO authorDAO, BookMapper bookMapper) {
         this.bookDAO = bookDAO;
         this.authorDAO = authorDAO;
+        this.bookMapper = bookMapper;
     }
 
     public BookResponse insertBook(BookRequestInsert bookRequestInsert){
-
+        // Mapping method to "unpacking" current dto
+        /*
+        Book book = bookMapper.fromBookRequestInsert(bookRequestInsert);
+        return BookResponse
+                .builder()
+                .id(bookDAO.save(book).getId())
+                .build();
+        */
         Book book = new Book(
                 authorDAO.findById(bookRequestInsert.id_author())
                         .orElseThrow(()-> new AuthorNotFoundException("Author con id " + bookRequestInsert.id_author() + " non trovato")),

@@ -7,6 +7,7 @@ import project.HelloBook.Dtos.AuthorDtos.AuthorRequestUpdate;
 import project.HelloBook.Dtos.AuthorDtos.AuthorResponse;
 import project.HelloBook.Entities.Author;
 import project.HelloBook.ExceptionHandlers.Exceptions.AuthorNotFoundException;
+import project.HelloBook.Mappers.AuthorMapper;
 import project.HelloBook.Repositories.AuthorDAO;
 
 import java.util.List;
@@ -14,14 +15,24 @@ import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {
-
+    private final AuthorMapper authorMapper;
     private final AuthorDAO authorDAO;
     @Autowired
-    public AuthorService(AuthorDAO authorDAO) {
+    public AuthorService(AuthorMapper authorMapper, AuthorDAO authorDAO) {
+        this.authorMapper = authorMapper;
         this.authorDAO = authorDAO;
     }
 
     public AuthorResponse insertAuthor(AuthorRequestInsert authorRequestInsert){
+
+        // Mapping method to "unpacking" current dto
+        /*
+        Author author = authorMapper.fromAuthorRequestInsert(authorRequestInsert);
+        return AuthorResponse
+                .builder()
+                .id(authorDAO.save(author).getId())
+                .build();
+        */
 
         Author author = new Author(
                 authorRequestInsert.firstname(),

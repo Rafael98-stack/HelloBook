@@ -30,6 +30,7 @@ public class UserService {
 
 
     public UserResponse insertUser(UserRequestInsert userRequestInsert){
+        // Mapping method to "unpacking" current dto
         /*
         User user = userMapper.fromUserRequestInsert(userRequestInsert);
 
