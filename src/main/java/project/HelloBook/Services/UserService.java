@@ -8,6 +8,7 @@ import project.HelloBook.Dtos.UserDtos.UserResponse;
 import project.HelloBook.Entities.User;
 import project.HelloBook.ExceptionHandlers.Exceptions.AddressNotFoundException;
 import project.HelloBook.ExceptionHandlers.Exceptions.UserNotFoundException;
+import project.HelloBook.Mappers.UserMapper;
 import project.HelloBook.Repositories.AddressDAO;
 import project.HelloBook.Repositories.UserDAO;
 
@@ -18,16 +19,25 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserDAO userDAO;
     private final AddressDAO addressDAO;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserDAO userDAO, AddressDAO addressDAO) {
+    public UserService(UserDAO userDAO, AddressDAO addressDAO, UserMapper userMapper) {
         this.userDAO = userDAO;
         this.addressDAO = addressDAO;
+        this.userMapper = userMapper;
     }
 
 
     public UserResponse insertUser(UserRequestInsert userRequestInsert){
+        /*
+        User user = userMapper.fromUserRequestInsert(userRequestInsert);
 
+        return UserResponse
+                .builder()
+                .id(userDAO.save(user).getId())
+                .build();
+        */
         User user = new User(
         addressDAO.findById(userRequestInsert.id_address())
                 .orElseThrow(() -> new AddressNotFoundException("Comune non trovato")),
