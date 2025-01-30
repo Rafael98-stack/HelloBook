@@ -2,6 +2,7 @@ package project.HelloBook.Entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,7 @@ public class User {
     private String lastname;
     private String email;
     private String password;
+    @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
